@@ -1,0 +1,13 @@
+MensaApi- PollApi
+setSchoolId - setPollId
+useSchoolIdContext - usePollIdContext
+SchoolIdContextProvider - PollIdContextProvider
+MensaNav - Nav
+schoolId - pollId
+SchoolIdContext - PollIdContext
+SchoolIdProvider - PollIdProvider
+schoolId - PollId
+SchoolsPage - PollsPage
+schools - polls
+setSchools - setPolls
+school - poll
