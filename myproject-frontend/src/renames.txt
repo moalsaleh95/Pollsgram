@@ -11,3 +11,4 @@ SchoolsPage - PollsPage
 schools - polls
 setSchools - setPolls
 school - poll
+getSchools - getPolls
