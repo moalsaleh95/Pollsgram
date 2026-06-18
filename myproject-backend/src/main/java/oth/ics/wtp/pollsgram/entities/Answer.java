@@ -1,4 +1,4 @@
-package your.package.name.entity;
+package oth.ics.wtp.pollsgram.entities;
 
 import jakarta.persistence.*;
 
@@ -7,7 +7,6 @@ import jakarta.persistence.*;
         name = "answers",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"participation_id", "question_id"})
-                // UniqueContraints means: the combination of these two columns must be unique
         }
 )
 public class Answer {
@@ -64,15 +63,10 @@ public class Answer {
         this.participation = participation;
     }
 
-    // Poll owns its Question objects, when saving a poll, its questions can be saved with it.
-    public void setQuestion(Question question) @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true){
+    public void setQuestion(Question question) {
         this.question = question;
     }
 
-    //three value fields: String textValue;
-    //Boolean booleanValue;
-    //Integer numericValue;
-    // Only one should be used depending on the question type. The service layer will validate that
     public void setTextValue(String textValue) {
         this.textValue = textValue;
     }

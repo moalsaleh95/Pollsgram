@@ -1,4 +1,4 @@
-package your.package.name.entity;
+package oth.ics.wtp.pollsgram.entities;
 
 public enum QuestionType {
     TEXT,
