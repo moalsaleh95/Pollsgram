@@ -1,28 +1,40 @@
 import {createContext, useContext, useState} from "react";
+import {fetchCurrentUser} from "../api/authApi.js";
 
-export const loggedOut = {name: null, password: null, roles: [], loggedIn: false};
+const loggedOutUser = {
+    username: null,
+    password: null,
+    roles: [],
+    loggedIn: false
+};
 
 const AuthContext = createContext(undefined);
-
-let _currentAuth = loggedOut;
 
 export function useAuthContext() {
     return useContext(AuthContext);
 }
 
 export default function AuthContextProvider({children}) {
-    const [auth, internalSetAuth] = useState(loggedOut);
+    const [auth, setAuth] = useState(loggedOutUser);
 
-    function setAuth(newAuth) {
-        _currentAuth = newAuth;
-        internalSetAuth(newAuth);
+    async function login(username, password) {
+        const user = await fetchCurrentUser(username, password);
+
+        setAuth({
+            username: user.username,
+            password,
+            roles: user.roles,
+            loggedIn: true
+        });
     }
 
-    return <AuthContext value={{auth, setAuth}}>
-        {children}
-    </AuthContext>;
-}
+    function logout() {
+        setAuth(loggedOutUser);
+    }
 
-export function currentAuth() {
-    return _currentAuth;
+    return (
+        <AuthContext.Provider value={{auth, login, logout}}>
+            {children}
+        </AuthContext.Provider>
+    );
 }

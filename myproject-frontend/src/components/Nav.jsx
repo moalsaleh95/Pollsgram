@@ -1,28 +1,79 @@
+import {NavLink, useNavigate} from "react-router";
 import {useAuthContext} from "../context/AuthContextProvider.jsx";
-import {NavLink} from "react-router";
-import * as DateUtil from "../util/DateUtil.js";
-import { usePollIdContext } from "../context/PollIdContextProvider.jsx";
 
 export default function Nav() {
-    const { auth } = useAuthContext();
-    const { pollId } = usePollIdContext();
+    const {auth, logout} = useAuthContext();
+    const navigate = useNavigate();
 
-    return <nav className="container navbar navbar-dark navbar-expand-sm pt-2 pb-2">
-        <span className="col navbar-brand">
-            <strong>Polls App</strong>
-        </span>
+    function handleLogout() {
+        logout();
+        navigate("/login");
+    }
 
-        <div id="mainnav" className="col navbar-collapse collapse">
-            <div className="navbar-nav ms-auto text-end">
-                <NavLink className="nav-link" to="/polls">Polls</NavLink>
-                {pollId !== undefined && auth.roles.includes("USER") &&
-                    <NavLink className="nav-link" to={"/menu/" + DateUtil.today()}>Menu</NavLink>}
-                {pollId !== undefined && auth.roles.includes("USER") &&
-                    <NavLink className="nav-link" to="/dishes">Dishes</NavLink>}
-                {auth.roles.includes("ADMIN") &&
-                    <NavLink className="nav-link" to="/users">Users</NavLink>}
-                <NavLink className="nav-link" to="/login">{auth.loggedIn ? "Log out" : "Log in"}</NavLink>
+    function navClass({isActive}) {
+        return isActive ? "nav-link active fw-semibold" : "nav-link";
+    }
+
+    return (
+        <nav className="navbar navbar-expand-md navbar-dark bg-primary">
+            <div className="container">
+                <NavLink className="navbar-brand fw-bold" to="/">
+                    Pollsgram
+                </NavLink>
+
+                <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#mainNav"
+                    aria-controls="mainNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span className="navbar-toggler-icon" />
+                </button>
+
+                <div id="mainNav" className="collapse navbar-collapse">
+                    <div className="navbar-nav ms-auto align-items-md-center">
+                        {auth.loggedIn ? (
+                            <>
+                                <span className="navbar-text text-white-50 me-md-3">
+                                    {auth.username}
+                                </span>
+
+                                <NavLink className={navClass} to="/polls/my">
+                                    My Polls
+                                </NavLink>
+
+                                <NavLink className={navClass} to="/polls/pending">
+                                    Pending Polls
+                                </NavLink>
+
+                                <NavLink className={navClass} to="/polls/create">
+                                    Create Poll
+                                </NavLink>
+
+                                <button
+                                    className="btn btn-link nav-link text-start"
+                                    onClick={handleLogout}
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <NavLink className={navClass} to="/login">
+                                    Login
+                                </NavLink>
+
+                                <NavLink className={navClass} to="/register">
+                                    Register
+                                </NavLink>
+                            </>
+                        )}
+                    </div>
+                </div>
             </div>
-        </div>
-    </nav>;
+        </nav>
+    );
 }

@@ -1,31 +1,103 @@
+import {Navigate, Route, Routes} from "react-router";
 import Nav from "./components/Nav.jsx";
-import './App.css'
-import PollsRoutes from "./routes/PollsRoutes.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-function App() {
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
+import MyPollsPage from "./pages/MyPollsPage.jsx";
+import PendingPollsPage from "./pages/PendingPollsPage.jsx";
+import CreatePollPage from "./pages/CreatePollPage.jsx";
+import PollDetailsPage from "./pages/PollDetailsPage.jsx";
+import SubmitPollPage from "./pages/SubmitPollPage.jsx";
+import ResultsPage from "./pages/ResultsPage.jsx";
+import SubmissionsPage from "./pages/SubmissionsPage.jsx";
+import EditPollPage from "./pages/EditPollPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
+export default function App() {
+    return (
+        <>
+            <Nav />
 
-  return (
-      <div className="bg-primary bg-opacity-10">
-      <div className="bg-primary">
-        <header className="container">
-          <Nav/>
-        </header>
-      </div>
-      <div className="bg-white">
-        <main className="container pt-3 pb-4 bg-white">
-          <PollsRoutes/>
+            <Routes>
+                <Route path="/" element={<Navigate to="/polls/my" />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-        </main>
-      </div>
-      <div className="border-top">
-        <footer className="container pt-2">
-          <p className="text-muted small">Summer 2026, Web Technology Project (ICS), OTH Regensburg<br/>
-            Created with Spring Boot, React, Bootstrap, MariaDB, and Docker.<br/>
-            Project repository: <a className="text-muted" href="https://gitlab.oth-regensburg.de">OTH GitLab</a></p>
-        </footer>
-      </div>
-      </div>
-  )
+                <Route
+                    path="/polls/my"
+                    element={
+                        <ProtectedRoute>
+                            <MyPollsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/polls/pending"
+                    element={
+                        <ProtectedRoute>
+                            <PendingPollsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/polls/create"
+                    element={
+                        <ProtectedRoute>
+                            <CreatePollPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/polls/:id"
+                    element={
+                        <ProtectedRoute>
+                            <PollDetailsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/polls/:id/submit"
+                    element={
+                        <ProtectedRoute>
+                            <SubmitPollPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/polls/:id/results"
+                    element={
+                        <ProtectedRoute>
+                            <ResultsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/polls/:id/submissions"
+                    element={
+                        <ProtectedRoute>
+                            <SubmissionsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/polls/:id/edit"
+                    element={
+                        <ProtectedRoute>
+                            <EditPollPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                // path="*" catches every URL that did not match the defined routes.
+                <Route path="*" element={<NotFoundPage />} />
+
+            </Routes>
+        </>
+    );
 }
-
-export default App

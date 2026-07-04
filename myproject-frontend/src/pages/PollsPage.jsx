@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {useAuthContext} from "../context/AuthContextProvider.jsx";
-import * as PollApi from "../api/PollApi.js";
+import * as PollApi from "../api/pollApi.js";
 import PollItem from "../components/PollItem.jsx";
 
 export default function PollsPage() {

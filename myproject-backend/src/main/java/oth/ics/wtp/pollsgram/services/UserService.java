@@ -9,6 +9,7 @@ import oth.ics.wtp.pollsgram.mappers.UserMapper;
 import oth.ics.wtp.pollsgram.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import java.util.List;
 
@@ -66,5 +67,12 @@ public class UserService {
         if (request.getPassword().length() < 4) {
             throw new BadRequestException("Password must contain at least 4 characters");
         }
+    }
+
+    public List<UserResponse> findAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
     }
 }

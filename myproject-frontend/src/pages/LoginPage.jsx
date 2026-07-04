@@ -1,79 +1,64 @@
-import {useRef, useState} from "react";
-import {loggedOut, useAuthContext} from "../context/AuthContextProvider.jsx";
-import {usePollIdContext} from "../context/PollIdContextProvider.jsx";
-import * as PollApi from "../api/PollApi.js";
+import {useState} from "react";
+import {useNavigate} from "react-router";
+import {useAuthContext} from "../context/AuthContextProvider.jsx";
+import ErrorMessage from "../components/ErrorMessage.jsx";
 
 export default function LoginPage() {
-    const { auth, setAuth } = useAuthContext();
-    const { setPollId } = usePollIdContext();
-    const [createAccount, setCreateAccount] = useState(false);
-    const name = useRef(undefined);
-    const password = useRef(undefined);
+    const navigate = useNavigate();
+    const {login} = useAuthContext();
 
-    function logOut() {
-        setAuth(loggedOut);
-        setPollId(undefined);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        setError("");
+
+        try {
+            await login(username, password);
+            navigate("/polls/my");
+        } catch (err) {
+            setError("Invalid username or password");
+        }
     }
 
-    async function logIn() {
-        const newAuth = {name: name.current.value, password: password.current.value}
-        const result = await PollApi.logIn(newAuth);
-        newAuth.roles = result.roles;
-        newAuth.loggedIn = true;
-        setAuth(newAuth);
-    }
+    return (
+        <main className="container py-4">
+            <h1 className="mb-3">Login</h1>
 
-    async function register() {
-        const newAuth = {name: name.current.value, password: password.current.value, roles: ["USER"]};
-        if (role.current.value === "MANAGER" || role.current.value === "ADMIN") newAuth.roles.push("MANAGER");
-        if (role.current.value === "ADMIN") newAuth.roles.push("ADMIN");
-        const result = await PollApi.registerUser(newAuth);
-        newAuth.roles = result.roles;
-        newAuth.loggedIn = true;
-        setAuth(newAuth)
-    }
+            <ErrorMessage message={error} />
 
-    if (auth.loggedIn) {
-        return <>
-            <p><em>Currently logged in as: <strong>{auth.name}</strong></em></p>
-            <button className="btn btn-outline-danger col-12" onClick={logOut}>Log out</button>
-        </>;
-    } else {
-        return <>
-            <p><em>Currently not logged in.</em></p>
-            <div className="form-check mb-sm-3">
-                <input id="new-account" className="form-check-input" type="checkbox" defaultValue={""+createAccount}
-                       onChange={e => setCreateAccount(e.target.checked)}/>
-                <label className="form-check-label" htmlFor="new-account">I want to create a new account.</label>
-            </div>
-            <div className="row mb-sm-3">
-                <label className="col-sm-3 col-form-label text-end" htmlFor="name">User name:</label>
-                <div className="col-sm-9">
-                    <input id="name" className="form-control" placeholder="Your name" ref={name}/>
+            <form onSubmit={handleSubmit} className="card p-3">
+                <div className="mb-3">
+                    <label htmlFor="username" className="form-label">
+                        Username
+                    </label>
+                    <input
+                        id="username"
+                        className="form-control"
+                        value={username}
+                        onChange={event => setUsername(event.target.value)}
+                    />
                 </div>
-            </div>
-            <div className="row mb-sm-3">
-                <label className="col-sm-3 col-form-label text-end" htmlFor="password">Password:</label>
-                <div className="col-sm-9">
-                    <input type="password" id="password" className="form-control" placeholder="***" ref={password}/>
+
+                <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                        Password
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        className="form-control"
+                        value={password}
+                        onChange={event => setPassword(event.target.value)}
+                    />
                 </div>
-            </div>
-            {createAccount ?
-                <>
-                <div className="row mb-3">
-                    <label className="col-sm-3 col-form-label text-end" htmlFor="roles">Role:</label>
-                    <div className="col-sm-9">
-                        <select id="role" className="form-select" ref={role}>
-                            <option value="USER">User</option>
-                            <option value="MANAGER">Manager</option>
-                            <option value="ADMIN">Admin</option>
-                        </select>
-                    </div>
-                </div>
-                <button className="btn btn-primary col-12 mt-3 mt-sm-0" onClick={register}>Register</button>
-            </>
-                : <button className="btn btn-primary col-12 mt-3 mt-sm-0" onClick={logIn}>Log in</button>
-            }
-        </>;
-    }
+
+                <button className="btn btn-primary" type="submit">
+                    Login
+                </button>
+            </form>
+        </main>
+    );
 }

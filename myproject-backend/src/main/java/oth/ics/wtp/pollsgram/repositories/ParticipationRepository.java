@@ -18,4 +18,6 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     List<Participation> findByPoll(Poll poll); // returns all responses for a poll
 
     List<Participation> findByParticipant(User participant); // returns participation history for a user
+
+    long countByParticipant(User participant);
 }

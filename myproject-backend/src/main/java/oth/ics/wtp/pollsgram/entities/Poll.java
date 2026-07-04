@@ -9,6 +9,13 @@ import java.util.List;
 @Table(name = "polls")
 public class Poll {
 
+    @OneToMany(
+            mappedBy = "poll",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Invitation> invitations = new ArrayList<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,6 +48,10 @@ public class Poll {
         this.description = description;
         this.dueDate = dueDate;
         this.creator = creator;
+    }
+
+    public List<Invitation> getInvitations() {
+        return invitations;
     }
 
     public Long getId() {

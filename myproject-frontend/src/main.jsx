@@ -1,21 +1,20 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import {StrictMode} from "react";
+import {createRoot} from "react-dom/client";
 import {BrowserRouter} from "react-router";
-import App from './App.jsx'
 import AuthContextProvider from "./context/AuthContextProvider.jsx";
-import PollIdContextProvider from "./context/PollIdContextProvider.jsx"
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./index.css";
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-      <AuthContextProvider>
-          <PollIdContextProvider>
-              <BrowserRouter>
-          <App />
-              </BrowserRouter>
-          </PollIdContextProvider>
-      </AuthContextProvider>
+import App from "./App.jsx";
 
-  </StrictMode>,
-)
+createRoot(document.getElementById("root")).render(
+    <StrictMode>
+        <AuthContextProvider>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </AuthContextProvider>
+    </StrictMode>
+);

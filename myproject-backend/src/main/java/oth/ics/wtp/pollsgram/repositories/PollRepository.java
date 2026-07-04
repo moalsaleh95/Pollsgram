@@ -13,4 +13,8 @@ public interface PollRepository extends JpaRepository<Poll, Long> {
     List<Poll> findByCreator(User creator); // find all pulls created by a user
 
     List<Poll> findByFinishedFalse(); // only active polls
+
+    long countByCreator(User creator);
+
+    long countByCreatorAndFinished(User creator, boolean finished);
 }
