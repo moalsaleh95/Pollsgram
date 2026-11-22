@@ -1,35 +1,38 @@
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"
+).replace(/\/+$/, "");
 
 export async function apiRequest(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const headers = {
+    ...(options.body != null ? { "Content-Type": "application/json" } : {}),
+    ...(options.headers || {}),
+  };
+
+  const response = await fetch(`${API_BASE_URL}/api${path}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
+    headers,
   });
 
-  if (!response.ok) {
-    let message = "Request failed";
+  const text = await response.text();
 
-    try {
-      const errorBody = await response.json();
-      message = errorBody.message || errorBody.error || message;
-    } catch {
-      // ignore
+  if (!response.ok) {
+    let message = `Request failed (${response.status})`;
+
+    if (text) {
+      try {
+        const errorBody = JSON.parse(text);
+        message = errorBody.message || errorBody.error || message;
+      } catch {
+        message = text;
+      }
     }
 
     throw new Error(message);
   }
 
-  // Read the body as text first
-  const text = await response.text();
-
-  // Empty body?
-  if (!text) {
+  if (!text.trim()) {
     return null;
   }
 
-  // Otherwise parse JSON
   return JSON.parse(text);
 }
